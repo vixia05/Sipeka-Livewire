@@ -7,6 +7,7 @@ use App\Http\Livewire\DashboardController;
 use App\Http\Livewire\EntryNilaiController;
 use App\Http\Livewire\GradePegawaiController;
 use App\Http\Livewire\IndikatorPenilaianController;
+use App\Http\Livewire\AddIndikatorPenilaianController;
 use App\Http\Livewire\ReportPegawaiController;
 
 /*
@@ -37,6 +38,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/entryNilai',EntryNilaiController::class)->name('entryNilai');
     Route::get('/gradePegawai',GradePegawaiController::class)->name('gradePegawai');
+    Route::get('/addIndikator',AddIndikatorPenilaianController::class)->name('addIndikator');
     Route::get('/indikatorPenilaian',IndikatorPenilaianController::class)->name('indikatorPenilaian');
     Route::get('/reportPegawai',ReportPegawaiController::class)->name('reportPegawai');
 });
