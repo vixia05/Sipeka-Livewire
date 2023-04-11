@@ -9,4 +9,9 @@ class Unit extends Model
 {
     use HasFactory;
     protected $table = "unit";
+    protected $guarded = [
+        'id',
+        'created_at',
+        'updated_at'
+    ];
 }

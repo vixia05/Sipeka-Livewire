@@ -48,7 +48,7 @@
                                     <td class="px-4 border-r">
                                         <x-text-input
                                         id="sub{{ $subIndikator->id }}np{{ $user->np_user }}"
-                                        wire:model='poin.{{ $subIndikator->id }}.{{ $user->np_user }}'
+                                        wire:model='poin.{{ $user->np_user }}.{{ $subIndikator->id }}'
                                         type="number"
                                         class="block mx-auto mt-1 w-[7ch]"
                                         />

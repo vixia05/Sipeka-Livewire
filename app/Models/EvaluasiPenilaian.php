@@ -9,4 +9,9 @@ class EvaluasiPenilaian extends Model
 {
     use HasFactory;
     protected $table = "evaluasi_penilaian";
+    protected $guarded = [
+        'id',
+        'created_at',
+        'updated_at'
+    ];
 }

@@ -9,4 +9,10 @@ class NilaiPegawai extends Model
 {
     use HasFactory;
     protected $table = "nilai_pegawai";
+
+    protected $guarded = [
+        'id',
+        'created_at',
+        'updated_at'
+    ];
 }

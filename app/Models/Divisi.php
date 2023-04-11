@@ -9,4 +9,9 @@ class Divisi extends Model
 {
     use HasFactory;
     protected $table = "divisi";
+    protected $guarded = [
+        'id',
+        'created_at',
+        'updated_at'
+    ];
 }

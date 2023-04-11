@@ -9,4 +9,9 @@ class SubIndikator extends Model
 {
     use HasFactory;
     protected $table = "sub_indikator";
+    protected $guarded = [
+        'id',
+        'created_at',
+        'updated_at'
+    ];
 }

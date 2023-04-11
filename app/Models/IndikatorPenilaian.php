@@ -10,6 +10,11 @@ class IndikatorPenilaian extends Model
 {
     use HasFactory;
     protected $table = "indikator_penilaian";
+    protected $guarded = [
+        'id',
+        'created_at',
+        'updated_at'
+    ];
 
     /**
      * Get all of the Sub_kriteria for the KriteriaPenilaian

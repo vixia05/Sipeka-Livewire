@@ -6,16 +6,24 @@ use Livewire\Component;
 use App\Models\IndikatorPenilaian;
 use App\Models\SubIndikator;
 use App\Models\EvaluasiPenilaian;
+use App\Models\NilaiPegawai;
+use App\Models\PoinIndikator;
+use App\Models\PoinSubIndikator;
 use App\Models\UserDetails;
 use Carbon\Carbon;
 
 class EntryNilaiController extends Component
 {
-    public $poin;
+    public $poin,$month;
 
     protected $rules = [
 
     ];
+
+    public function mount()
+    {
+        $this->month = today();
+    }
 
     public function render()
     {
@@ -31,7 +39,35 @@ class EntryNilaiController extends Component
 
     public function test()
     {
-        dd($this->poin[1]);
+        $getNP = UserDetails::all();
+
+        // dd($this->poin);
+        foreach($getNP as $np)
+        {
+            $createNilai = NilaiPegawai::updateOrCreate([
+                'np_user' => $np->np_user,
+                'bulan' => $this->month
+            ]);
+
+            $createIndikator = PoinIndikator::create([
+                'id_nilai_pegawai' => $createNilai->id,
+            ]);
+
+            foreach($this->poin[$np->np_user] as $key => $poinPegawai)
+            {
+                $subIndikator = SubIndikator::where('id',$createIndikator->id);
+                $insertSubPoin = PoinSubIndikator::updateOrCreate(
+                    [
+                        'sub_indikator' => $subIndikator->value('sub_indikator'),
+                        'id_poin_indikator_penilaian' => $createIndikator->id,
+                    ],
+                    [
+                        'poin' => $poinPegawai,
+                        'evaluasi' => EvaluasiPenilaian::where('id_sub_indikator',$subIndikator->value('id'))->value('evaluasi'),
+                    ]
+                );
+            }
+        }
     }
 
 

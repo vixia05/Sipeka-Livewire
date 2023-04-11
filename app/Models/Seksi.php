@@ -9,4 +9,9 @@ class Seksi extends Model
 {
     use HasFactory;
     protected $table = "seksi";
+    protected $guarded = [
+        'id',
+        'created_at',
+        'updated_at'
+    ];
 }
