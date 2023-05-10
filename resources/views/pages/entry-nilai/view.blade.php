@@ -3,8 +3,11 @@
         {{ __('Entry Nilai Pegawai') }}
     </h2>
 </x-slot>
-
-<div class="py-12">
+<div class="py-12"
+     x-data="{open : @entangle('successModal')}">
+     <x-a-modal>
+         Update Successfull
+     </x-a-modal>
     <div class="max-w-7xl lg:max-w-none sm:px-6 lg:px-8">
         <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
             <div class="p-6 text-gray-900">
@@ -50,6 +53,7 @@
                                         id="sub{{ $subIndikator->id }}np{{ $user->np_user }}"
                                         wire:model='poin.{{ $user->np_user }}.{{ $subIndikator->id }}'
                                         type="number"
+                                        max="120"
                                         class="block mx-auto mt-1 w-[7ch]"
                                         />
                                     </td>
@@ -60,7 +64,7 @@
                    </table>
                </div>
                 @endforeach
-                <button type="button" wire:click='test'
+                <button type="button" wire:click='storeNilai'
                     class="px-4 py-1 font-semibold text-green-100 transition duration-150 ease-in-out bg-green-500 rounded shadow-md w-fit shadow-green-500/40 brightness-110 hover:brightness-100">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
                         class="w-5 h-5">

@@ -16,8 +16,8 @@ return new class extends Migration
             $table->integer('start');
             $table->integer('end');
             $table->string('evaluasi');
-            $table->foreignId('id_sub_kriteria')
-                  ->constrained('sub_kriteria')
+            $table->foreignId('id_sub_indikator')
+                  ->constrained('sub_indikator')
                   ->onUpdate('cascade')
                   ->onDelete('no action');
             $table->timestamps();

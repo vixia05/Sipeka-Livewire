@@ -23,7 +23,7 @@ return new class extends Migration
 
             $table->integer('nilai_murni');
             $table->integer('nilai_akhir');
-            $table->date('bulan');
+            $table->string('bulan');
             $table->timestamps();
         });
     }

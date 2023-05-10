@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('sub_kriteria', function (Blueprint $table) {
+        Schema::create('sub_indikator', function (Blueprint $table) {
             $table->id();
-            $table->string('sub_kriteria');
+            $table->string('sub_indikator');
             $table->integer('bobot_nilai');
             $table->integer('poin_max');
-            $table->foreignId('id_kriteria_penilaian')
-                  ->constrained('kriteria_penilaian')
+            $table->foreignId('id_indikator_penilaian')
+                  ->constrained('indikator_penilaian')
                   ->onUpdate('cascade')
                   ->onDelete('no action');
             $table->timestamps();
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('sub_kriteria');
+        Schema::dropIfExists('sub_indikator');
     }
 };

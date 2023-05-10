@@ -11,16 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('poin_kriteria_penilaian', function (Blueprint $table) {
+        Schema::create('indikator_penilaian', function (Blueprint $table) {
             $table->id();
-            $table->string('kriteria',25);
-            $table->integer('poin');
-
-            $table->foreignId('id_nilai_pegawai')
-                  ->constrained('nilai_pegawai')
-                  ->onUpdate('cascade')
-                  ->onDelete('no action');
-
+            $table->string('indikator',50);
+            $table->float('nilai');
             $table->timestamps();
         });
     }
@@ -30,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('poin_kriteria_penilaian');
+        Schema::dropIfExists('indikator_penilaian');
     }
 };

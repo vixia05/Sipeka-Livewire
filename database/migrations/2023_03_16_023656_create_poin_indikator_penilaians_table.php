@@ -11,14 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('poin_sub_kriteria', function (Blueprint $table) {
+        Schema::create('poin_indikator', function (Blueprint $table) {
             $table->id();
-            $table->string('sub_kriteria',50);
+            $table->bigInt('id_indikator');
             $table->integer('poin');
-            $table->string('evaluasi');
 
-            $table->foreignId('id_poin_kriteria_penilaian')
-                  ->constrained('poin_kriteria_penilaian')
+            $table->foreignId('id_nilai_pegawai')
+                  ->constrained('nilai_pegawai')
                   ->onUpdate('cascade')
                   ->onDelete('no action');
 
@@ -31,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('poin_sub_kriteria');
+        Schema::dropIfExists('poin_indikator');
     }
 };

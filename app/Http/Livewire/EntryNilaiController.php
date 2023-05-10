@@ -8,13 +8,14 @@ use App\Models\SubIndikator;
 use App\Models\EvaluasiPenilaian;
 use App\Models\NilaiPegawai;
 use App\Models\PoinIndikator;
-use App\Models\PoinSubIndikator;
+use App\Models\PoinPegawai;
 use App\Models\UserDetails;
 use Carbon\Carbon;
 
 class EntryNilaiController extends Component
 {
     public $poin,$month;
+    public $successModal = false;
 
     protected $rules = [
 
@@ -37,93 +38,106 @@ class EntryNilaiController extends Component
         ]);
     }
 
-    public function test()
+    /** Store Nilai */
+    public function storeNilai()
     {
-        $getNP = UserDetails::all();
+        $getUsrDet  = UserDetails::all();
+        $getSubInd  = SubIndikator::all();
+        $getIndNil  = IndikatorPenilaian::all();
+        $convMonth  = $this->month->format('F-Y');
 
-        // dd($this->poin);
-        foreach($getNP as $np)
+        if ($this->poin !== null)
         {
-            $createNilai = NilaiPegawai::updateOrCreate([
-                'np_user' => $np->np_user,
-                'bulan' => $this->month
-            ]);
-
-            $createIndikator = PoinIndikator::create([
-                'id_nilai_pegawai' => $createNilai->id,
-            ]);
-
-            foreach($this->poin[$np->np_user] as $key => $poinPegawai)
+            foreach ($getUsrDet as $user)
             {
-                $subIndikator = SubIndikator::where('id',$createIndikator->id);
-                $insertSubPoin = PoinSubIndikator::updateOrCreate(
-                    [
-                        'sub_indikator' => $subIndikator->value('sub_indikator'),
-                        'id_poin_indikator_penilaian' => $createIndikator->id,
-                    ],
-                    [
-                        'poin' => $poinPegawai,
-                        'evaluasi' => EvaluasiPenilaian::where('id_sub_indikator',$subIndikator->value('id'))->value('evaluasi'),
-                    ]
-                );
+                // Add Parent for Nilai Pegawai
+                $createNilai = NilaiPegawai::updateOrCreate([
+                    'np_user' => $user->np_user,
+                    'bulan' => $convMonth,
+                ]);
+
+                // Store Sub Indikator Poin for User
+                foreach ($this->poin[$user->np_user] as $key => $subPoin)
+                {
+                    $subIndById = SubIndikator::where('id',$key);
+                    $evaluasi   = EvaluasiPenilaian::where('id_sub_indikator',$subIndById->value('id'))
+                                                ->where('start','<=',$subPoin)
+                                                ->where('end','>=',$subPoin)
+                                                ->value('evaluasi');
+
+                    $storeSubPoin = PoinPegawai::updateOrCreate(
+                        [
+                            'id_indikator'      => $subIndById->value('id_indikator_penilaian'),
+                            'id_sub_indikator'  => $subIndById->value('id'),
+                            'id_nilai_pegawai'  => $createNilai->id,
+                        ],
+                        [
+                            'poin'      => $subPoin,
+                            'evaluasi'  => $evaluasi,
+                        ]
+                    );
+                }
+
+                // Store Main Indikator Poin for User
+                foreach($getIndNil as $indikator)
+                {
+                    $calcPoinInd = $storeSubPoin->where('id_indikator',$indikator->id)
+                                            ->where('id_nilai_pegawai',$createNilai->id)
+                                            ->get()
+                                            ->map(function ($calc){
+                                                $getSubIndikator    = SubIndikator::where('id',$calc->id_sub_indikator);
+                                                $bobotNilai = $getSubIndikator->value('bobot_nilai');
+                                                $maxPoin    = $getSubIndikator->value('poin_max');
+                                                $poin   = $calc->poin;
+                                                return divnum($poin,$maxPoin) * $bobotNilai;
+                                            })->sum();
+
+                    $storePoinInd = PoinIndikator::updateOrCreate(
+                        [
+                         'id_indikator'     => $indikator->id,
+                         'id_nilai_pegawai' => $createNilai->id
+                        ],
+                        [
+                            'poin'  => round($calcPoinInd,2)
+                        ]
+                    );
+                }
+
+                // Update Nilai Murni User
+                foreach(collect($createNilai->id) as $ids)
+                {
+                    $nilaiMurni  = PoinIndikator::where('id_nilai_pegawai',$ids)
+                                            ->get()
+                                            ->map(function ($substract){
+                                                $nilaiIndikator = IndikatorPenilaian::where('id',$substract->id_indikator)->value('nilai');
+                                                return divnum($substract->poin,100) * $nilaiIndikator;
+                                            })->sum();
+
+                    $updateNilai = NilaiPegawai::where('id',$ids)->update([
+                        'nilai_murni' => round($nilaiMurni,2)
+                    ]);
+                }
+
+
             }
+
+            $getNilai   = NilaiPegawai::where('bulan',$this->month->format('F-Y'))->get();
+
+            // Update Nilai Akhir User
+            foreach($getNilai as $nilai)
+            {
+                $nilaiAkhir = divnum($nilai->nilai_murni,$nilai->sum('nilai_murni')) * 118;
+
+                NilaiPegawai::where('id',$nilai->id)->update([
+                    'nilai_akhir' => round($nilaiAkhir,2)
+                ]);
+            }
+            $this->successModal = true;
+        }
+
+        else
+        {
+            //
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // public $npPegawai,$namaPegawai;
-    // public $tglPenilaian;
-    // public $evaluasi,$poin;
-
-    // protected $listeners = [
-    //     'evaluasi.* '
-    // ];
-
-    // protected $rules = [
-    //     'poin.*'
-    // ];
-
-    // public function mount()
-    // {
-    //     $this->tglPenilaian = Carbon::today()->format('Y-m-d');
-    // }
-
-    // public function render()
-    // {
-    //     $indikator = IndikatorPenilaian::all();
-    //     return view('pages.entry-nilai.main',[
-    //         'indikators' => $indikator,
-    //     ]);
-    // }
-
-    // public function selectPegawai()
-    // {
-    //     $this->namaPegawai = UserDetails::where('np_user',$this->npPegawai)->value('nama');
-    // }
-
-    // public function evaluasiSkor($poin,$idSub)
-    // {
-    //     $evaluasi = EvaluasiPenilaian::where('id_sub_indikator',$idSub)
-    //                             ->where(function ($query) use ($poin) {
-    //                                 $query->where('start','<=',$poin);
-    //                                 $query->where('end','>=',$poin);
-    //                             })->value('evaluasi');
-
-
-    // }
 }
