@@ -31,7 +31,7 @@
 
                 {{-- <!-- Total Skor --> --}}
                 <div class="w-full">
-                    <x-input-label for="sumSkor" value="Total Nilai" />
+                    <x-input-label for="sumSkor" value="Bobot Nilai" />
 
                     <x-text-input
                         id="sumSkor"

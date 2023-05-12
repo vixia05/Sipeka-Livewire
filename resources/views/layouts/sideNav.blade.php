@@ -1,4 +1,4 @@
-<aside class="sticky px-8 py-8 mt-10 ml-10 bg-white shadow top-10 rounded-xl min-w-fit h-fit hidden lg:block">
+<aside class="sticky hidden px-8 py-8 mt-10 ml-10 bg-white shadow drop-shadow-md top-10 rounded-xl min-w-fit h-fit lg:block">
     <ul class="space-y-3">
         {{-- Dashboard --}}
         <li>

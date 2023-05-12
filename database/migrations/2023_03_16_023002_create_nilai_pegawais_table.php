@@ -21,8 +21,8 @@ return new class extends Migration
                   ->onUpdate('cascade')
                   ->onDelete('no action');
 
-            $table->integer('nilai_murni');
-            $table->integer('nilai_akhir');
+            $table->float('nilai_murni');
+            $table->float('nilai_akhir');
             $table->string('bulan');
             $table->timestamps();
         });

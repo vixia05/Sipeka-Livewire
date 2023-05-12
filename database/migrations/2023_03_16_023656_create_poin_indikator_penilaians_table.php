@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('poin_indikator', function (Blueprint $table) {
             $table->id();
             $table->bigInt('id_indikator');
-            $table->integer('poin');
+            $table->float('poin');
 
             $table->foreignId('id_nilai_pegawai')
                   ->constrained('nilai_pegawai')
