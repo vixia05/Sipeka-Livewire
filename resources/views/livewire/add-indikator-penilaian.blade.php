@@ -162,7 +162,7 @@
                 @endforeach
                 {{-- <!-- Button Tambah Cakupan Penilaian --> --}}
                 <div class="flex flex-row justify-end gap-2 mt-4">
-                    <button type="button"
+                    <button type="button" wire:click.prevent='store'
                         class="px-4 py-1 font-semibold text-blue-100 transition duration-150 ease-in-out bg-blue-500 rounded shadow-md w-fit shadow-blue-500/40 brightness-110 hover:brightness-100">
                         Simpan
                     </button>
