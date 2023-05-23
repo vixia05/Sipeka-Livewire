@@ -18,7 +18,7 @@ class GradePegawaiController extends Component
 
     public function render()
     {
-        return view('pages.grade-pegawai.view',[
+        return view('pages.grade-pegawai.main',[
             'grades'     => $this->dataGrade(),
             'indikators' => $this->dataIndikator(),
         ]);

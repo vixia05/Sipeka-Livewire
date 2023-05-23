@@ -31,7 +31,7 @@ class EntryNilaiController extends Component
         $indikator = IndikatorPenilaian::all();
         $subIndikator = SubIndikator::all();
         $userDetails  = UserDetails::all();
-        return view('pages.entry-nilai.view',[
+        return view('pages.entry-nilai.main',[
             'indikators' => $indikator,
             'subIndikators' => $subIndikator,
             'userDetails' => $userDetails,

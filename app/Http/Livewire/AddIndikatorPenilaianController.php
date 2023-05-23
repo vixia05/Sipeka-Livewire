@@ -34,6 +34,51 @@ class AddIndikatorPenilaianController extends Component
         return view('livewire.add-indikator-penilaian');
     }
 
+    /**
+     * Menambahkan Sub Indikator
+     */
+    public function addIndikator($index)
+    {
+        $this->maxPoin[]  = '';
+        $this->subIndikators[]  = '';
+        $this->end["end".$index+1]  = [''];
+        $this->start["start".$index+1]    = [''];
+        $this->evaluasi["evaluasi".$index+1] = [''];
+        $this->formEvaluasi["sub".$index+1] = [''];
+    }
+
+
+    /**
+     * Delete Indikator
+     */
+    public function deleteIndikator($index)
+    {
+        unset($this->maxPoin[$index]);
+        unset($this->subIndikators[$index]);
+        unset($this->end["end".$index]);
+        unset($this->start["start".$index]);
+        unset($this->evaluasi["evaluasi".$index]);
+        unset($this->formEvaluasi["sub".$index]);
+
+        for($i = 0 ; $i < count($this->formEvaluasi) ; $i++)
+        {
+            $cIndex[]   = "sub".$i;
+            $cIndexEnd[]    = "end".$i;
+            $cIndexStart[]  = "start".$i;
+            $cIndexEvaluasi[]   = "start".$i;
+        }
+
+        $this->maxPoin = array_values($this->maxPoin);
+        $this->subIndikators = array_values($this->subIndikators);
+
+        $this->end = array_combine($cIndexEnd,$this->end);
+        $this->start = array_combine($cIndexStart,$this->start);
+        $this->evaluasi = array_combine($cIndexEvaluasi,$this->start);
+        $this->formEvaluasi = array_combine($cIndex,$this->formEvaluasi);
+        // dd($this->formEvaluasi);
+
+    }
+
 
     /**
      * Menambahkan Form Evaluasi
@@ -84,51 +129,38 @@ class AddIndikatorPenilaianController extends Component
         }
     }
 
-
-    /**
-     * Delete Indikator
-     */
-    public function deleteIndikator($index)
+    private function mergeEvaArr()
     {
-        unset($this->maxPoin[$index]);
-        unset($this->subIndikators[$index]);
-        unset($this->end["end".$index]);
-        unset($this->start["start".$index]);
-        unset($this->evaluasi["evaluasi".$index]);
-        unset($this->formEvaluasi["sub".$index]);
-
-        for($i = 0 ; $i < count($this->formEvaluasi) ; $i++)
-        {
-            $cIndex[]   = "sub".$i;
-            $cIndexEnd[]    = "end".$i;
-            $cIndexStart[]  = "start".$i;
-            $cIndexEvaluasi[]   = "start".$i;
-        }
-
-        $this->maxPoin = array_values($this->maxPoin);
-        $this->subIndikators = array_values($this->subIndikators);
-
-        $this->end = array_combine($cIndexEnd,$this->end);
-        $this->start = array_combine($cIndexStart,$this->start);
-        $this->evaluasi = array_combine($cIndexEvaluasi,$this->start);
-        $this->formEvaluasi = array_combine($cIndex,$this->formEvaluasi);
-        // dd($this->formEvaluasi);
-
+        return array_merge(
+            // $this->subIndikators,
+            $this->start,
+            $this->end,
+            $this->evaluasi
+        );
     }
 
-    public function addIndikator($index)
+    private function resetField()
     {
-        $this->maxPoin[]  = '';
-        $this->subIndikators[]  = '';
-        $this->end["end".$index+1]  = [''];
-        $this->start["start".$index+1]    = [''];
-        $this->evaluasi["evaluasi".$index+1] = [''];
-        $this->formEvaluasi["sub".$index+1] = [''];
+        session()->flash('saved');
+
+        $this->indikator = '';
+        $this->nilaiIndikator = '';
+        $this->subIndikators = [''];
+        $this->maxPoin = [''];
+
+        $this->end      = [''];
+        $this->start    = [''];
+        $this->evaluasi = [''];
+        $this->formEvaluasi = [''];
+
+        $this->end["end0"]      = [''];
+        $this->start["start0"]  = [''];
+        $this->evaluasi["evaluasi0"]    = [''];
+        $this->formEvaluasi['sub0']     = [''];
     }
 
     public function store()
     {
-        dd(['subIndikator' => $this->subIndikators,'poin' => $this->maxPoin,'form' => $this->formEvaluasi, 'end' => $this->end, 'start' => $this->start,'evaluasi' => $this->evaluasi]);
 
         // 1. Buat Indikator Baru Beserta Bobot Nilaianya
         $createIndikator = IndikatorPenilaian::updateOrCreate(
@@ -137,25 +169,40 @@ class AddIndikatorPenilaianController extends Component
                             );
 
         // 2.Insert Cakupan Penilaian Dari Indikator Yang Dibuat
-        foreach($this->subIndikators as $index => $sub)
+        foreach($this->subIndikators as $key => $sub)
         {
-            $createSubIndikator = SubIndikator::create([
+            $createSubIndikator = SubIndikator::updateOrCreate(
+                                [
                                     'sub_indikator' => $sub,
-                                    'bobot_nilai'   => 100 / count($this->subIndikators),
+                                    'id_indikator_penilaian' => $createIndikator->id,
+                                ],
+                                [
+                                    'bobot_nilai'   => round(100 / count($this->subIndikators),2),
                                     'poin_max'  => 120,
-                                    'id_inidikator_penilaian' => $createIndikator->id,
                                 ]);
 
-            // 3.Start Range Evaluasi Penilaian
-            // foreach($this->start["sub".$index] as $start)
-            // {
-            //     EvaluasiPenilaian::updateOrCreate(
-            //         [
-            //             'id_sub_indikator' => $createSubIndikator->id,
-            //             'start' => $ar
-            //         ],
-            //     )
-            // }
+            // foreach untuk range dan evaluasi
+            foreach($this->mergeEvaArr()["start".$key] as $_key => $start)
+            {
+                // dump($start);
+                // 3. Insert start range pertama untuk buat Id-nya
+                $addStart = EvaluasiPenilaian::updateOrCreate(
+                                [
+                                    'id_sub_indikator' => $createSubIndikator->id,
+                                    'start' => $start == null ? 0 : $start
+                                ],
+                            );
+
+                // 4. Insert end dan evaluasi berdasarkan id yang di buat di atas
+                EvaluasiPenilaian::where('id',$addStart->id)
+                            ->update([
+                                'end'=> $this->mergeEvaArr()["end".$key][$_key] == null ? 0 : $this->mergeEvaArr()["end".$key][$_key],
+                                'evaluasi'=> $this->mergeEvaArr()["evaluasi".$key][$_key] == null ? 0 : $this->mergeEvaArr()["evaluasi".$key][$_key],
+                            ]);
+            }
         }
+
+        $this->resetField();
+
     }
 }
