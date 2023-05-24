@@ -3,10 +3,12 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\IndikatorPenilaianController;
+
 use App\Http\Livewire\DashboardController;
 use App\Http\Livewire\EntryNilaiController;
 use App\Http\Livewire\GradePegawaiController;
-use App\Http\Livewire\IndikatorPenilaianController;
+use App\Http\Livewire\IndikatorPenilaianLivewire;
 use App\Http\Livewire\AddIndikatorPenilaianController;
 use App\Http\Livewire\ReportPegawaiController;
 use App\Http\Livewire\ShowIndikator;
@@ -37,11 +39,13 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    Route::resource('/indikatorPenilaian', IndikatorPenilaianController::class);
+
     Route::get('/entryNilai',EntryNilaiController::class)->name('entryNilai');
     Route::get('/gradePegawai',GradePegawaiController::class)->name('gradePegawai');
     Route::get('/addIndikator',AddIndikatorPenilaianController::class)->name('addIndikator');
-    Route::get('/indikatorPenilaian',IndikatorPenilaianController::class)->name('indikatorPenilaian');
-    Route::get('/indikatorPenilaian/{id}',ShowIndikator::class)->name('showIndikator');
+    // Route::get('/indikatorPenilaian',IndikatorPenilaianController::class)->name('indikatorPenilaian');
+    // Route::get('/indikatorPenilaian/{id}',ShowIndikator::class)->name('showIndikator');
     Route::get('/reportPegawai',ReportPegawaiController::class)->name('reportPegawai');
 });
 

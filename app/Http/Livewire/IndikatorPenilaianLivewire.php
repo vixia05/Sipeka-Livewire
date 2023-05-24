@@ -5,7 +5,7 @@ namespace App\Http\Livewire;
 use Livewire\Component;
 use App\Models\IndikatorPenilaian;
 
-class IndikatorPenilaianController extends Component
+class IndikatorPenilaianLivewire extends Component
 {
     public function render()
     {

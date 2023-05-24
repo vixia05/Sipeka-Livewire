@@ -1,12 +1,12 @@
-<x-slot name="header">
-    <h2 class="text-xl font-semibold leading-tight text-gray-800">
-        {{ __('Indikator Penilaian') }}
-    </h2>
-</x-slot>
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="text-xl font-semibold leading-tight text-gray-800">
+            {{ __('Indikator Penilaian') }}
+        </h2>
+    </x-slot>
 
-<div class="py-12">
-    <div class="max-w-7xl sm:px-6 lg:px-8">
-        <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
+    <div class="py-12">
+        <div class="max-w-7xl sm:px-6 lg:px-8">
             <div class="p-6 text-gray-900">
 
                 {{-- Tambah Indikator --}}
@@ -23,7 +23,7 @@
                 </div>
 
                 {{-- Table Indikator --}}
-                <div class="relative mt-4 overflow-x-auto rounded-lg">
+                <div class="relative mt-4 overflow-x-auto rounded-lg border-x">
                     <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                         <thead class="text-xs text-gray-700 uppercase bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
                             <tr>
@@ -43,53 +43,56 @@
                         </thead>
                         <tbody>
                             @forelse ($indikators as $indikator)
-                            <tr
-                                class="leading-5 transition duration-300 ease-in-out bg-white border-b dark:border-gray-700 dark:bg-gray-800 hover:bg-gray-200/25">
-                                {{-- Indikator --}}
-                                <th scope="row"
-                                    class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                    {{ $indikator->indikator }}
-                                </th>
+                                <tr
+                                    class="leading-5 transition duration-300 ease-in-out bg-white border-b hover:bg-gray-200/25 dark:border-gray-700 dark:bg-gray-800">
+                                    {{-- Indikator --}}
+                                    <th scope="row"
+                                        class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                        {{ $indikator->indikator }}
+                                    </th>
 
-                                {{-- Cakupan Penilaian --}}
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <ul class="space-y-1 text-xs font-semibold leading-tight">
-                                        @forelse ($indikator->SubIndikator as $subIndikator)
-                                        <li><div class="rounded-full bg-black p-0.5 inline-block mb-0.5"></div> {{ $subIndikator->sub_indikator }}</li>
-                                        @empty
-                                        -
-                                        @endforelse
-                                    </ul>
-                                </td>
+                                    {{-- Cakupan Penilaian --}}
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <ul class="space-y-1 text-xs font-semibold leading-tight">
+                                            @forelse ($indikator->SubIndikator as $subIndikator)
+                                                <li>
+                                                    <div class="mb-0.5 inline-block rounded-full bg-black p-0.5">
+                                                    </div> {{ $subIndikator->sub_indikator }}
+                                                </li>
+                                            @empty
+                                                -
+                                            @endforelse
+                                        </ul>
+                                    </td>
 
-                                {{-- Bobot Nilai --}}
-                                <td class="px-6 py-4 text-center">
-                                    {{ $indikator->nilai }} %
-                                </td>
+                                    {{-- Bobot Nilai --}}
+                                    <td class="px-6 py-4 text-center">
+                                        {{ $indikator->nilai }} %
+                                    </td>
 
-                                {{-- Action --}}
-                                <td class="px-6 py-4 text-center">
-                                    <div class="flex justify-center gap-2">
-                                        <button type="button" wire:click.prevent="show({{ $indikator->id }})"
-                                            class="px-4 py-1 font-semibold text-blue-100 transition duration-150 ease-in-out bg-blue-600 rounded shadow-md shadow-blue-600/40 brightness-110 hover:brightness-100">
-                                            Detail
-                                        </button>
-                                        <button type="button"
-                                            class="px-4 py-1 font-semibold text-green-100 transition duration-150 ease-in-out bg-green-600 rounded shadow-md shadow-green-600/40 brightness-110 hover:brightness-100">
-                                            Edit
-                                        </button>
-                                        <button type="button"
-                                            class="px-4 py-1 font-semibold text-red-100 transition duration-150 ease-in-out bg-red-600 rounded shadow-md shadow-red-600/40 brightness-110 hover:brightness-100">
-                                            Delete
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
+                                    {{-- Action --}}
+                                    <td class="px-6 py-4 text-center">
+                                        <div class="flex justify-center gap-2">
+                                            <a href="{{ route('indikatorPenilaian.show', $indikator->id) }}"
+                                                class="px-4 py-1 font-semibold text-blue-100 transition duration-150 ease-in-out bg-blue-600 rounded shadow-md shadow-blue-600/40 brightness-110 hover:brightness-100">
+                                                Detail
+                                            </a>
+                                            <button type="button"
+                                                class="px-4 py-1 font-semibold text-green-100 transition duration-150 ease-in-out bg-green-600 rounded shadow-md shadow-green-600/40 brightness-110 hover:brightness-100">
+                                                Edit
+                                            </button>
+                                            <button type="button"
+                                                class="px-4 py-1 font-semibold text-red-100 transition duration-150 ease-in-out bg-red-600 rounded shadow-md shadow-red-600/40 brightness-110 hover:brightness-100">
+                                                Delete
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
                             @empty
-                            <tr
-                                class="leading-5 bg-white border-b dark:border-gray-700 dark:bg-gray-800 hover:bg-gray-100/60">
-                                No Data
-                            </tr>
+                                <tr
+                                    class="leading-5 bg-white border-b hover:bg-gray-100/60 dark:border-gray-700 dark:bg-gray-800">
+                                    No Data
+                                </tr>
                             @endforelse
                         </tbody>
                     </table>
@@ -99,4 +102,4 @@
             </div>
         </div>
     </div>
-</div>
+</x-app-layout>
