@@ -50,7 +50,7 @@
                                     </td>
                                 </tr>
                                 @foreach ($subIndikator->evaluasi->sortBy('start') as $evaluasi)
-                                    <tr>
+                                    <tr class="leading-5 transition duration-300 ease-in-out bg-white hover:bg-gray-200/25 dark:border-gray-700 dark:bg-gray-800">
                                         {{-- Poin --}}
                                         <td class="border-b border-x">
                                             <div class="px-3 py-2 text-center">

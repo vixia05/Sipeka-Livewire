@@ -5,7 +5,11 @@
         </h2>
     </x-slot>
 
-    <div class="py-12">
+    <div class="py-12" x-data="{
+        'open' : false,
+        'idIndikator' : ''
+    }">
+        @include('pages.indikator-penilaian.partials.delete-modal')
         <div class="max-w-7xl sm:px-6 lg:px-8">
             <div class="p-6 text-gray-900">
 
@@ -81,7 +85,7 @@
                                                 class="px-4 py-1 font-semibold text-green-100 transition duration-150 ease-in-out bg-green-600 rounded shadow-md shadow-green-600/40 brightness-110 hover:brightness-100">
                                                 Edit
                                             </button>
-                                            <button type="button"
+                                            <button type="button" @click="open = !open, idIndikator = '{{ route('indikatorPenilaian.destroy',$indikator->id)}}'"
                                                 class="px-4 py-1 font-semibold text-red-100 transition duration-150 ease-in-out bg-red-600 rounded shadow-md shadow-red-600/40 brightness-110 hover:brightness-100">
                                                 Delete
                                             </button>
